@@ -13,10 +13,24 @@ class OverlayConfigurationItem(models.Model):
     )
     config_value = fields.Char(string='Value')
     sequence = fields.Integer(string='Sequence', help='Sequence order of the configuration item.')
-    font_style = fields.Selection(
-        [('helvetica', 'Helvetica'), ('calibri', 'Calibri'), ('times', 'Times New Roman')],
+    font_style = fields.Selection([
+        ('helvetica', 'Helvetica'), 
+        ('calibri', 'Calibri'), 
+        ('times', 'Times New Roman'),
+        ('agency', 'Agency FB'),
+        ('arial', 'Arial')],
         string='Font Style',
-        default='helvetica',
+        default='times',
         help='Font style for the overlay text.'
     )
     font_size = fields.Integer(string='Font Size', help='Font size for the overlay text.')
+    font_format = fields.Selection([
+        ('normal', 'Normal'),
+        ('bold', 'Bold'),
+        ('italic', 'Italic'),
+        ('underline', 'Underline')],
+        string='Font Format',
+        default='normal',
+        help='Font format for the overlay text.'
+    )
+    

@@ -33,6 +33,9 @@
             <field name="name"/>
             <field name="form_id"/>
             <field name="notes"/>
+            <field name='x'/>
+            <field name='y'/>
+            <field name='text'/>
           </group>
         </sheet>
       </form>
