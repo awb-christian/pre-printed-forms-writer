@@ -10,12 +10,21 @@ from reportlab.pdfbase import pdfmetrics
 import base64
 from odoo.modules.module import get_module_resource
 
+PAGE_SIZES = {
+    'letter': letter,
+    'legal': legal,
+    'a3': A3,
+    'a4': A4,
+    'half_sheet_horizontal': (396, 306),  # 5.5" x 8.5"
+    'half_sheet_vertical': (306, 396),    # 8.5" x 5.5"
+}
+
+
 class PrePrintedForm(models.Model):
     _name = 'pre.printed.form'
     _description = 'Pre‑Printed Form'
 
-    name = fields.Char(string='Form Name', required=True)
-    description = fields.Text(string='Description')
+    name = fields.Char(string='Pre-printed Form Name', required=True, default=lambda self: self.env['ir.sequence'].next_by_code('pre.printed.form') or 'New')
     page_size = fields.Selection([
         ('letter', 'Letter'), 
         ('legal', 'Legal'), 
@@ -24,12 +33,14 @@ class PrePrintedForm(models.Model):
         ('half sheet horizontal', 'Half Sheet Horizontal'),
         ('half sheet vertical', 'Half Sheet vertical')],
         string='Page Size',
+        required=True,
         default='letter',
         help='Page size for the pre-printed form.'
     )
     input_pdf_attachment_id = fields.Many2one(
         comodel_name='ir.attachment',
         string='Input PDF',
+        required=True,
         domain=[('mimetype', '=', 'application/pdf')],
         help='Select a PDF file that will serve as the input for overlay text.'
     )
@@ -43,7 +54,17 @@ class PrePrintedForm(models.Model):
         inverse_name='form_id',
         string='Config Items'
     )
-    output_pdf_name = fields.Char(string='Output PDF Name', help='Name for the generated PDF file.')
+    output_pdf_name = fields.Char(
+        string='Output PDF Name', 
+        required=True, 
+        default=lambda self: f"{self.name}_output.pdf",
+        help='Name for the generated PDF file.'
+    )
+    model_id = fields.Many2one(
+        comodel_name='ir.model',
+        string='Model',
+        help='Select a model related to this pre-printed form.'
+    )
 
     def upload_pdf(self, pdf_data, pdf_name):
         for record in self:
@@ -62,7 +83,7 @@ class PrePrintedForm(models.Model):
             # Link the attachment to the input_pdf_attachment_id field
             record.input_pdf_attachment_id = attachment
 
-    def process_action(self):
+    def process_action(self, model_id = None):
         # Define page size mapping
         page_sizes = {
             'letter': letter,
@@ -77,8 +98,8 @@ class PrePrintedForm(models.Model):
         font_path = get_module_resource('pre-printed-forms-writer', 'static/fonts', 'AGENCYB.TTF')
 
         # Register custom fonts
-        pdfmetrics.registerFont(TTFont('AgencyFB', font_path))
-        pdfmetrics.registerFont(TTFont('AgencyFB-Bold', font_path))  # Register the same font for bold if no separate bold TTF is available
+        # pdfmetrics.registerFont(TTFont('AgencyFB', font_path))
+        # pdfmetrics.registerFont(TTFont('AgencyFB-Bold', font_path))  # Register the same font for bold if no separate bold TTF is available
 
         for record in self:
             if not record.input_pdf_attachment_id:
@@ -121,8 +142,13 @@ class PrePrintedForm(models.Model):
                     font_size = config.font_size or 12
 
                 overlay_pdf.setFont(font_name, font_size)
-                overlay_pdf.drawString(x, y, item.text)
-
+                text_to_draw = item.text
+                if item.field_id and model_id:
+                    model = self.env[record.model_id.model].search([('id', '=', model_id)], limit=1)
+                    if model:
+                        field_name = item.field_id.name
+                        text_to_draw = getattr(model, field_name, item.text)
+                overlay_pdf.drawString(x, y, text_to_draw)
                 # Simulate underline if needed
                 if config and config.font_format == 'underline':
                     text_width = overlay_pdf.stringWidth(item.text, font_name, font_size)

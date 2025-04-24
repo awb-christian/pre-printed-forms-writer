@@ -1,0 +1,32 @@
+<odoo>
+    <!-- Action -->
+    <record id="action_ir_attachment_pdf" model="ir.actions.act_window">
+        <field name="name">PDF Attachments</field>
+        <field name="res_model">ir.attachment</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('mimetype', '=', 'application/pdf')]</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_ir_attachment_pdf" name="PDF Attachments" parent="menu_pre_printed_forms_root" action="action_ir_attachment_pdf" sequence="20"/>
+
+    <!-- Kanban View -->
+    <record id="view_ir_attachment_pdf_kanban" model="ir.ui.view">
+        <field name="name">ir.attachment.pdf.kanban</field>
+        <field name="model">ir.attachment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div><field name="mimetype"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

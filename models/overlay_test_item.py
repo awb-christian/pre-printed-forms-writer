@@ -25,6 +25,11 @@ class OverlayTestItem(models.Model):
         string='Config Item',
         help='Configuration for this test item.'
     )
+    field_id = fields.Many2one(
+        comodel_name='ir.model.fields',
+        string='Field',
+        help='Select a field from the model associated with the pre-printed form.'
+    )
 
     @api.constrains('x', 'y')
     def _check_coordinates(self):

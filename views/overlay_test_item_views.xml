@@ -37,6 +37,7 @@
             <field name='x'/>
             <field name='y'/>
             <field name='text'/>
+            <field name="field_id"/>
             <field name="config_id"/>
           </group>
         </sheet>

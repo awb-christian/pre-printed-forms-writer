@@ -1,5 +1,7 @@
 
 # Odoo specific files
+**/*.pyc
+
 *.pyc
 __pycache__/
 .odoo/
