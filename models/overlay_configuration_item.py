@@ -12,8 +12,6 @@ class OverlayConfigurationItem(models.Model):
         ondelete='cascade'
     )
     config_id = fields.Char(string='ID')
-    config_value = fields.Char(string='Value')
-    sequence = fields.Integer(string='Sequence', help='Sequence order of the configuration item.')
     font_style = fields.Selection([
         ('helvetica', 'Helvetica'), 
         ('calibri', 'Calibri'), 
