@@ -11,6 +11,7 @@ class OverlayConfigurationItem(models.Model):
         string='Pre‑Printed Form',
         ondelete='cascade'
     )
+    config_id = fields.Char(string='ID')
     config_value = fields.Char(string='Value')
     sequence = fields.Integer(string='Sequence', help='Sequence order of the configuration item.')
     font_style = fields.Selection([
@@ -33,4 +34,5 @@ class OverlayConfigurationItem(models.Model):
         default='normal',
         help='Font format for the overlay text.'
     )
+
     

@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 class OverlayTestItem(models.Model):
     _name = 'overlay.test.item'
     _description = 'Overlay Test Item'
+    _order = 'sequence, id'
 
     name = fields.Char(string='Item Name', required=True)
     form_id = fields.Many2one(
@@ -19,17 +20,18 @@ class OverlayTestItem(models.Model):
     x = fields.Float(string='X Coordinate', help='X position on the form.')
     y = fields.Float(string='Y Coordinate', help='Y position on the form.')
     text = fields.Char(string='Text', help='Text to overlay on the form.')
+    config_id = fields.Many2one(
+        comodel_name='overlay.config.item',
+        string='Config Item',
+        help='Configuration for this test item.'
+    )
 
-    # model_ids = fields.One2many()
+    @api.constrains('x', 'y')
+    def _check_coordinates(self):
+        for record in self:
+            if record.x < 0 or record.y < 0:
+                raise ValidationError("Coordinates must be non-negative.")
 
-    @api.model
-    def fetch_sales_data(self):
-        sales_orders = self.env['sale.order'].search([])
-        for order in sales_orders:
-            _logger.debug(f"MODELS: {order.name, order.amount_total}")
+    def name_get(self):
+        return [(rec.id, f"{rec.name} ({rec.x:.1f}, {rec.y:.1f})") for rec in self]
 
-    @api.model
-    def fetch_accounting_data(self):
-        invoices = self.env['account.move'].search([('move_type', '=', 'out_invoice')])
-        for invoice in invoices:
-            print(invoice.name, invoice.amount_total)

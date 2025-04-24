@@ -19,6 +19,7 @@
       <tree>
         <field name="name"/>
         <field name="form_id"/>
+        <field name="config_id"/>
       </tree>
     </field>
   </record>
@@ -36,6 +37,7 @@
             <field name='x'/>
             <field name='y'/>
             <field name='text'/>
+            <field name="config_id"/>
           </group>
         </sheet>
       </form>
