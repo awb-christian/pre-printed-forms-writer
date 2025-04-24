@@ -43,8 +43,10 @@
           <group>
             <field name="name"/>
             <field name="description"/>
+            <field name="page_size"/>
           </group>
           <group>
+            <field name="input_pdf_attachment_id"/>
             <button name="process_action" type="object" string="Process" class="oe_highlight"/>
           </group>
           <notebook>
