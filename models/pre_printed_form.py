@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from reportlab.lib.pagesizes import letter, legal, A3, A4
+from reportlab.pdfgen import canvas
+from io import BytesIO
 import base64
 
 class PrePrintedForm(models.Model):
@@ -55,22 +58,75 @@ class PrePrintedForm(models.Model):
             record.input_pdf_attachment_id = attachment
 
     def process_action(self):
-        for record in self:
-            if not record.input_pdf_attachment_id:
-                raise UserError("Please select a PDF file before processing.")
-            
-            # Process the selected PDF
-            pdf_content = record.input_pdf_attachment_id.datas
-            # Add your processing logic here
+    # Define page size mapping
+        page_sizes = {
+            'letter': letter,
+            'legal': legal,
+            'a3': A3,
+            'a4': A4,
+            'half sheet horizontal': (396, 306),  # 5.5" x 8.5"
+            'half sheet vertical': (306, 396),    # 8.5" x 5.5"
+        }
 
-    def process_action(self):
-        pdf_content = b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 55 >>\nstream\nBT\n/F1 24 Tf\n100 100 Td\n(Hello, World!) Tj\nET\nendstream\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF"
-        
-        attachment = self.env['ir.attachment'].create({
-            'name': 'hello_world.pdf',
-            'type': 'binary',
-            'datas': base64.b64encode(pdf_content).decode('utf-8'),
-            'mimetype': 'application/pdf',
-            'res_model': self._name,
-            'res_id': self.id,
-        })
+        for record in self:
+            page_size = page_sizes.get(record.page_size, letter)
+            buffer = BytesIO()
+            pdf = canvas.Canvas(buffer, pagesize=page_size)
+
+            for item in record.test_item_ids:
+                x = float(item.x)
+                y = float(item.y)
+
+                # Default font values
+                font_name = 'Times-Roman'
+                font_size = 12
+
+                config = item.config_id
+                if config:
+                    style_map = {
+                        'times': 'Times-Roman',
+                        'helvetica': 'Helvetica',
+                        'arial': 'Helvetica',
+                        'calibri': 'Helvetica',
+                        'agency': 'Helvetica'
+                    }
+
+                    base_font = style_map.get(config.font_style, 'Times-Roman')
+                    suffix = ''
+                    if config.font_format == 'bold':
+                        suffix = '-Bold'
+                    elif config.font_format == 'italic':
+                        suffix = '-Oblique'
+
+                    font_name = f"{base_font}{suffix}"
+                    font_size = config.font_size or 12
+
+                pdf.setFont(font_name, font_size)
+                pdf.drawString(x, y, item.text)
+
+                # Simulate underline if needed
+                if config and config.font_format == 'underline':
+                    text_width = pdf.stringWidth(item.text, font_name, font_size)
+                    pdf.line(x, y - 2, x + text_width, y - 2)
+
+            pdf.showPage()
+            pdf.save()
+
+            buffer.seek(0)
+            pdf_data = buffer.read()
+            buffer.close()
+
+            attachment = self.env['ir.attachment'].create({
+                'name': 'test_items.pdf',
+                'type': 'binary',
+                'datas': base64.b64encode(pdf_data).decode('utf-8'),
+                'mimetype': 'application/pdf',
+                'res_model': self._name,
+                'res_id': record.id,
+            })
+
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'self',
+            }
