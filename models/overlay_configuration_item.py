@@ -2,16 +2,19 @@
 from odoo import models, fields
 
 class OverlayConfigurationItem(models.Model):
+    """
+    OverlayConfigurationItem model manages configuration settings for overlay text items.
+    """
     _name = 'overlay.config.item'
     _description = 'Overlay Configuration Item'
 
+    # Field Definitions
     name = fields.Char(string='Config Name', required=True)
     form_id = fields.Many2one(
         comodel_name='pre.printed.form',
         string='Pre‑Printed Form',
         ondelete='cascade'
     )
-    config_id = fields.Char(string='ID')
     font_style = fields.Selection([
         ('helvetica', 'Helvetica'), 
         ('calibri', 'Calibri'), 

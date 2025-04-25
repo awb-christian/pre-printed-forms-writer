@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- Action: Define the window action for Overlay Config Items -->
   <record id="action_overlay_config_item" model="ir.actions.act_window">
     <field name="name">Overlay Config Items</field>
     <field name="res_model">overlay.config.item</field>
     <field name="view_mode">tree,form</field>
   </record>
 
+  <!-- Menu: Add Config Items to the menu under Pre-Printed Forms -->
   <menuitem id="menu_overlay_config_item"
             name="Config Items"
             parent="menu_pre_printed_forms_root"
             action="action_overlay_config_item"
             sequence="30"/>
 
+  <!-- Tree View: Define the tree view for Overlay Config Items -->
   <record id="view_overlay_config_item_tree" model="ir.ui.view">
     <field name="name">overlay.config.item.tree</field>
     <field name="model">overlay.config.item</field>
@@ -23,6 +26,7 @@
     </field>
   </record>
 
+  <!-- Form View: Define the form view for Overlay Config Items -->
   <record id="view_overlay_config_item_form" model="ir.ui.view">
     <field name="name">overlay.config.item.form</field>
     <field name="model">overlay.config.item</field>
@@ -35,7 +39,6 @@
             <field name="font_style"/>
             <field name="font_size"/>
             <field name="font_format"/>
-            <field name="config_id"/>
           </group>
         </sheet>
       </form>
