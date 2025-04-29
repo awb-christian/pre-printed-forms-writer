@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_pre_printed_form,access_pre_printed_form,model_pre_printed_form,base.group_system,1,1,1,1
-access_overlay_test_item,access_overlay_test_item,model_overlay_test_item,base.group_system,1,1,1,1
+access_overlay_text_item,access_overlay_text_item,model_overlay_text_item,base.group_system,1,1,1,1
 access_overlay_config_item,access_overlay_config_item,model_overlay_config_item,base.group_system,1,1,1,1
