@@ -4,7 +4,7 @@
         <field name="name">PDF Attachments</field>
         <field name="res_model">ir.attachment</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="domain">[("mimetype", "=", "application/pdf")]</field>
+        <field name="domain">[('mimetype', '=', 'application/pdf'), ('res_model', '=', False)]</field>
         <field name="context">{'default_mimetype': 'application/pdf'}</field>
     </record>
 
