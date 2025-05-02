@@ -52,7 +52,7 @@ class PrePrintedForm(models.Model):
         comodel_name='ir.attachment',
         string='Input PDF',
         required=True,
-        domain=[('mimetype', '=', 'application/pdf')],
+        domain=[('mimetype', '=', 'application/pdf'), ('res_model', '=', False)],
         help='Select a PDF file that will serve as the input for overlay text.'
     )
     text_item_ids = fields.One2many(
