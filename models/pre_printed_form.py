@@ -210,3 +210,31 @@ class PrePrintedForm(models.Model):
                 'url': f'/web/content/{attachment.id}?download=true',
                 'target': 'self',
             }
+        
+    def create_contextual_action(self):
+        IrActionsServer = self.env["ir.actions.server"]
+        for rec in self:
+            action_code = f"""for rec in records:
+        form = env['pre.printed.form'].browse({rec.id})
+        if form:
+            form.process_action(rec.id)
+        else:
+            raise ValidationError('Pre-Printed Form not Found.')
+    """
+
+            IrActionsServer.create({
+                "name": rec.name,
+                "state": "code",
+                "model_id": rec.model_id.id,
+                "code": action_code,
+            })
+
+    # def remove_contextual_action(self):
+    #     IrActionsServer = self.env['ir.actions.server']
+    #     for rec in self:
+    #         IrActionsServer.search([
+    #             ('model_id', '=', rec.model_id.id),
+    #             ('code', 'ilike', 'form.process_action(rec.id)')
+    #         ]).unlink()
+    #     return {'type': 'ir.actions.client', 'tag': 'reload'}
+

@@ -22,7 +22,7 @@ class OverlayTextItem(models.Model):
     )
     x = fields.Float(string='X Coordinate', help='X position on the form.')
     y = fields.Float(string='Y Coordinate', help='Y position on the form.')
-    text = fields.Char(string='Text', help='Text to overlay on the form.')
+    text = fields.Char(string='Fallback/Static Text', help='Text to overlay on the form.')
     config_id = fields.Many2one(
         comodel_name='overlay.config.item',
         string='Config Item',
@@ -30,7 +30,7 @@ class OverlayTextItem(models.Model):
     )
     field_id = fields.Many2one(
         comodel_name='ir.model.fields',
-        string='Field',
+        string='Dynamic Text (From Field)',
         help='Select a field from the model associated with the pre-printed form.'
     )
 
