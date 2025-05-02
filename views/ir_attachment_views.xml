@@ -13,7 +13,7 @@
               name="PDF Attachments"
               parent="menu_pre_printed_forms_root"
               action="action_ir_attachment_pdf"
-              sequence="40"/>
+              sequence="20"/>
 
     <!-- Tree View: Define the tree view for PDF Attachments -->
     <record id="view_ir_attachment_pdf_tree" model="ir.ui.view">

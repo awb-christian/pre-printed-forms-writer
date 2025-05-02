@@ -12,7 +12,7 @@
             name="Text Items"
             parent="menu_pre_printed_forms_root"
             action="action_overlay_text_item"
-            sequence="20"/>
+            sequence="40"/>
 
   <!-- Tree View: Define the tree view for Overlay Text Items -->
   <record id="view_overlay_text_item_tree" model="ir.ui.view">
@@ -22,6 +22,10 @@
       <tree>
         <field name="name"/>
         <field name="form_id"/>
+        <field name="x"/>
+        <field name="y"/>
+        <field name="text"/>
+        <field name="field_id"/>
         <field name="config_id"/>
       </tree>
     </field>
