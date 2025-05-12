@@ -76,6 +76,10 @@ class PrePrintedForm(models.Model):
         string="Model",
         help="Select a model related to this pre-printed form.",
     )
+    code = fields.Text(
+        string="Custom Code",
+        help="This field will be used to call a custom function that will return a list of x, y, and text",
+    )
 
     def upload_pdf(self, pdf_data, pdf_name):
         """
@@ -179,6 +183,11 @@ class PrePrintedForm(models.Model):
                 text_width = overlay_pdf.stringWidth(item.text, font_name, font_size)
                 overlay_pdf.line(x, y - 2, x + text_width, y - 2)
 
+        if self.code:
+            items = eval(self.code)
+            for item in items:
+                overlay_pdf.drawString(item["x"], item["y"], item["text"])
+
         overlay_pdf.showPage()
         overlay_pdf.save()
 
@@ -226,10 +235,12 @@ class PrePrintedForm(models.Model):
     def create_contextual_action(self):
         IrActionsServer = self.env["ir.actions.server"]
         for rec in self:
-            action_code = f"""pre_printed_form_id = {rec.id}
-pre_printed_form = env['pre.printed.form'].search([('id', '=', pre_printed_form_id)], limit=1)
-pre_printed_form.process_action(record.id)
-    """
+            action_code = f"""action = None
+for record in records:
+    pre_printed_form_id = {rec.id}
+    pre_printed_form = env['pre.printed.form'].search([('id', '=', pre_printed_form_id)], limit=1)
+    action = pre_printed_form.process_action(record.id)
+    break"""
 
             temp = IrActionsServer.create(
                 {

@@ -13,14 +13,9 @@
   </record>
 
   <!-- Menu -->
-  <menuitem id="menu_pre_printed_forms_root"
-            name="Pre‑Printed Forms" sequence="10"/>
-  <menuitem id="menu_pre_printed_form"
-            name="Pre-Printed Forms"
-            parent="menu_pre_printed_forms_root"
-            action="action_pre_printed_form"
-            sequence="10"/>
-  
+  <menuitem id="menu_pre_printed_forms_root" name="Pre‑Printed Forms" sequence="10"/>
+  <menuitem id="menu_pre_printed_form" name="Pre-Printed Forms" parent="menu_pre_printed_forms_root" action="action_pre_printed_form" sequence="10"/>
+
   <!-- Tree view -->
   <record id="view_pre_printed_form_tree" model="ir.ui.view">
     <field name="name">pre.printed.form.tree</field>
@@ -49,6 +44,7 @@
             <field name="input_pdf_attachment_id"/>
             <field name="output_pdf_name"/>
             <field name="page_size"/>
+            <field name="code" widget="code"/>
             <!-- <button name="process_action" type="object" string="Process" class="oe_highlight"/> -->
             <button name="create_contextual_action" type="object" string="Create Contextual Action" class="oe_highlight" colspan="2"/>
             <!-- <button name="remove_contextual_action" type="object" string="Remove Contextual Action" class="oe_highlight" colspan="2"/> -->
