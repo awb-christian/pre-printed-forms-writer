@@ -1,5 +1,4 @@
 <odoo>
-    <!-- Action: Define the window action for PDF Attachments -->
     <record id="action_ir_attachment_pdf" model="ir.actions.act_window">
         <field name="name">PDF Attachments</field>
         <field name="res_model">ir.attachment</field>
@@ -8,14 +7,12 @@
         <field name="context">{'default_mimetype': 'application/pdf'}</field>
     </record>
 
-    <!-- Menu: Add PDF Attachments to the menu under Pre-Printed Forms -->
     <menuitem id="menu_ir_attachment_pdf"
               name="PDF Attachments"
               parent="menu_pre_printed_forms_root"
               action="action_ir_attachment_pdf"
               sequence="20"/>
 
-    <!-- Tree View: Define the tree view for PDF Attachments -->
     <record id="view_ir_attachment_pdf_tree" model="ir.ui.view">
         <field name="name">ir.attachment.pdf.tree</field>
         <field name="model">ir.attachment</field>
@@ -29,7 +26,6 @@
         </field>
     </record>
 
-    <!-- Kanban View: Define the kanban view for PDF Attachments -->
     <record id="view_ir_attachment_pdf_kanban" model="ir.ui.view">
         <field name="name">ir.attachment.pdf.kanban</field>
         <field name="model">ir.attachment</field>
