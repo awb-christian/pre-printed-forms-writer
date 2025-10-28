@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 {
-    'name': 'Pre‑Printed Forms Writer',
+    'name': 'Pre-Printed Forms Writer',
+    'summary': 'Manage pre-printed forms with overlay items',
     'version': '1.0',
-    'summary': 'Manage pre‑printed forms with overlay items',
     'category': 'Tools',
     'author': 'Your Name',
     'depends': ['base'],
