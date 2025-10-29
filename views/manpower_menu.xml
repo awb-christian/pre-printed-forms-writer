@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Manpower Menu -->
+    <menuitem id="menu_manpower_main" 
+              name="Manpower" 
+              sequence="10" 
+              web_icon="base,static/description/icon.png"/>
+
+    <!-- Manpower Request Menu -->
+    <menuitem id="menu_manpower_request" 
+              name="Requests" 
+              parent="menu_manpower_main" 
+              action="action_manpower_request" 
+              sequence="10"/>
+
+    <!-- Manpower Request Submenu -->
+    <menuitem id="menu_manpower_request_all" 
+              name="All Requests" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="10"/>
+
+    <menuitem id="menu_manpower_request_my" 
+              name="My Requests" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="20"
+              context="{'search_default_my_requests': 1}"/>
+
+    <menuitem id="menu_manpower_request_draft" 
+              name="Draft Requests" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="30"
+              context="{'search_default_draft': 1}"/>
+
+    <menuitem id="menu_manpower_request_approval" 
+              name="For Approval" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="40"
+              context="{'search_default_for_approval': 1}"/>
+
+    <menuitem id="menu_manpower_request_approved" 
+              name="Approved Requests" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="50"
+              context="{'search_default_approved': 1}"/>
+
+    <menuitem id="menu_manpower_request_rejected" 
+              name="Rejected Requests" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="60"
+              context="{'search_default_rejected': 1}"/>
+
+    <menuitem id="menu_manpower_request_hold" 
+              name="On Hold" 
+              parent="menu_manpower_request" 
+              action="action_manpower_request" 
+              sequence="70"
+              context="{'search_default_on_hold': 1}"/>
+
+    <!-- Manpower Reports Menu -->
+    <menuitem id="menu_manpower_reports" 
+              name="Reports" 
+              parent="menu_manpower_main" 
+              sequence="20"/>
+
+    <menuitem id="menu_manpower_reports_kanban" 
+              name="Kanban View" 
+              parent="menu_manpower_reports" 
+              action="action_manpower_request_kanban" 
+              sequence="10"/>
+
+</odoo>

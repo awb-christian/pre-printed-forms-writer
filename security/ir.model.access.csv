@@ -2,3 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_pre_printed_form,access_pre_printed_form,model_pre_printed_form,base.group_system,1,1,1,1
 access_overlay_text_item,access_overlay_text_item,model_overlay_text_item,base.group_system,1,1,1,1
 access_overlay_config_item,access_overlay_config_item,model_overlay_config_item,base.group_system,1,1,1,1
+access_manpower_request,access_manpower_request,model_manpower_request,base.group_user,1,1,1,0
+access_manpower_request_hr,access_manpower_request_hr,model_manpower_request,hr.group_hr_manager,1,1,1,1
+access_manpower_request_reject_wizard,access_manpower_request_reject_wizard,model_manpower_request_reject_wizard,base.group_user,1,1,1,1

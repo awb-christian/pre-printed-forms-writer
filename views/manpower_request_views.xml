@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Manpower Request Tree View -->
+    <record id="view_manpower_request_tree" model="ir.ui.view">
+        <field name="name">manpower.request.tree</field>
+        <field name="model">manpower.request</field>
+        <field name="arch" type="xml">
+            <tree string="Manpower Requests" decoration-success="request_status=='approved'" decoration-danger="request_status=='rejected'" decoration-warning="request_status=='on_hold'" decoration-info="request_status=='for_approval'">
+                <field name="name" string="Requisition ID"/>
+                <field name="date_requested"/>
+                <field name="duration_days" string="Days"/>
+                <field name="request_type"/>
+                <field name="request_status" widget="badge" decoration-success="request_status=='approved'" decoration-danger="request_status=='rejected'" decoration-warning="request_status=='on_hold'" decoration-info="request_status=='for_approval'"/>
+                <field name="urgency_level" widget="badge" decoration-success="urgency_level=='low'" decoration-warning="urgency_level=='medium'" decoration-danger="urgency_level=='high'" decoration-bf="urgency_level=='critical'"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <field name="position_title"/>
+                <field name="expected_start_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Manpower Request Form View -->
+    <record id="view_manpower_request_form" model="ir.ui.view">
+        <field name="name">manpower.request.form</field>
+        <field name="model">manpower.request</field>
+        <field name="arch" type="xml">
+            <form string="Manpower Request">
+                <header>
+                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" class="btn-primary" attrs="{'invisible': [('request_status', '!=', 'draft')]}"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" attrs="{'invisible': [('request_status', '!=', 'for_approval')]}"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" attrs="{'invisible': [('request_status', 'not in', ['for_approval', 'on_hold'])]}"/>
+                    <button name="action_hold" string="Put on Hold" type="object" class="btn-warning" attrs="{'invisible': [('request_status', 'not in', ['for_approval'])]}"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" attrs="{'invisible': [('request_status', 'not in', ['rejected', 'on_hold'])]}"/>
+                    <field name="request_status" widget="statusbar" statusbar_visible="draft,for_approval,approved,rejected,on_hold"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_manpower_request_kanban)d" type="action" class="oe_stat_button" icon="fa-tasks">
+                            <field name="id" widget="statinfo" string="Requests"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_requested"/>
+                            <field name="duration_days" readonly="1"/>
+                            <field name="request_type"/>
+                            <field name="urgency_level"/>
+                        </group>
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="department_id"/>
+                            <field name="position_title"/>
+                            <field name="expected_start_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Job Details">
+                            <group>
+                                <field name="job_description" nolabel="1"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="required_skills"/>
+                                </group>
+                                <group>
+                                    <field name="experience_required"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="education_required"/>
+                            </group>
+                        </page>
+                        <page string="Financial Details">
+                            <group>
+                                <field name="budget_allocated"/>
+                                <field name="currency_id"/>
+                            </group>
+                        </page>
+                        <page string="Justification">
+                            <group>
+                                <field name="justification" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Approval Details" attrs="{'invisible': [('request_status', 'in', ['draft'])]}">
+                            <group>
+                                <group>
+                                    <field name="approved_by" readonly="1"/>
+                                    <field name="approval_date" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="rejection_reason" readonly="1" attrs="{'invisible': [('request_status', '!=', 'rejected')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Manpower Request Search View -->
+    <record id="view_manpower_request_search" model="ir.ui.view">
+        <field name="name">manpower.request.search</field>
+        <field name="model">manpower.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Manpower Requests">
+                <field name="name" string="Requisition ID"/>
+                <field name="position_title"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('request_status', '=', 'draft')]"/>
+                <filter string="For Approval" name="for_approval" domain="[('request_status', '=', 'for_approval')]"/>
+                <filter string="Approved" name="approved" domain="[('request_status', '=', 'approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('request_status', '=', 'rejected')]"/>
+                <filter string="On Hold" name="on_hold" domain="[('request_status', '=', 'on_hold')]"/>
+                <separator/>
+                <filter string="New Position" name="new_position" domain="[('request_type', '=', 'new_position')]"/>
+                <filter string="Replacement" name="replacement" domain="[('request_type', '=', 'replacement')]"/>
+                <filter string="Additional Headcount" name="additional_headcount" domain="[('request_type', '=', 'additional_headcount')]"/>
+                <filter string="Project-based" name="project_based" domain="[('request_type', '=', 'project_based')]"/>
+                <separator/>
+                <filter string="Low Priority" name="low_priority" domain="[('urgency_level', '=', 'low')]"/>
+                <filter string="Medium Priority" name="medium_priority" domain="[('urgency_level', '=', 'medium')]"/>
+                <filter string="High Priority" name="high_priority" domain="[('urgency_level', '=', 'high')]"/>
+                <filter string="Critical Priority" name="critical_priority" domain="[('urgency_level', '=', 'critical')]"/>
+                <separator/>
+                <filter string="My Requests" name="my_requests" domain="[('requested_by', '=', uid)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'request_status'}"/>
+                    <filter string="Request Type" name="group_type" context="{'group_by': 'request_type'}"/>
+                    <filter string="Urgency Level" name="group_urgency" context="{'group_by': 'urgency_level'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Requested By" name="group_requested_by" context="{'group_by': 'requested_by'}"/>
+                    <filter string="Date Requested" name="group_date" context="{'group_by': 'date_requested'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Manpower Request Kanban View -->
+    <record id="view_manpower_request_kanban" model="ir.ui.view">
+        <field name="name">manpower.request.kanban</field>
+        <field name="model">manpower.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="request_status" class="o_kanban_small_column">
+                <field name="request_status"/>
+                <field name="urgency_level"/>
+                <field name="name"/>
+                <field name="position_title"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <field name="date_requested"/>
+                <field name="duration_days"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="position_title"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <span t-attf-class="badge badge-pill badge-#{urgency_level == 'low' and 'success' or urgency_level == 'medium' and 'warning' or urgency_level == 'high' and 'danger' or 'dark'}">
+                                            <field name="urgency_level"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_record_details">
+                                        <div class="o_kanban_record_details_row">
+                                            <span>Requested by:</span>
+                                            <field name="requested_by"/>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span>Department:</span>
+                                            <field name="department_id"/>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span>Date:</span>
+                                            <field name="date_requested"/>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span>Duration:</span>
+                                            <field name="duration_days"/> days
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Manpower Request Action -->
+    <record id="action_manpower_request" model="ir.actions.act_window">
+        <field name="name">Manpower Requests</field>
+        <field name="res_model">manpower.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="search_view_id" ref="view_manpower_request_search"/>
+        <field name="context">{'search_default_my_requests': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new manpower request
+            </p>
+            <p>
+                Track and manage manpower requests for new positions, replacements, 
+                additional headcount, or project-based hiring.
+            </p>
+        </field>
+    </record>
+
+    <!-- Manpower Request Kanban Action -->
+    <record id="action_manpower_request_kanban" model="ir.actions.act_window">
+        <field name="name">Manpower Requests</field>
+        <field name="res_model">manpower.request</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_manpower_request_search"/>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <!-- Rejection Wizard Form View -->
+    <record id="view_manpower_request_reject_wizard" model="ir.ui.view">
+        <field name="name">manpower.request.reject.wizard.form</field>
+        <field name="model">manpower.request.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Manpower Request">
+                <group>
+                    <field name="request_id" readonly="1"/>
+                    <field name="rejection_reason" placeholder="Please provide a reason for rejection..."/>
+                </group>
+                <footer>
+                    <button string="Reject" name="action_reject" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Rejection Wizard Action -->
+    <record id="action_manpower_request_reject_wizard" model="ir.actions.act_window">
+        <field name="name">Reject Manpower Request</field>
+        <field name="res_model">manpower.request.reject.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
