@@ -5,9 +5,12 @@
     'summary': 'Manage pre‑printed forms with overlay items',
     'category': 'Tools',
     'author': 'Your Name',
-    'depends': ['base'],
+    'depends': ['base', 'hr', 'mail'],
     'data': [
+        'data/ir_sequence_data.xml',
         'security/ir.model.access.csv',
+        'views/manpower_request_views.xml',
+        'views/manpower_menu.xml',
         'views/pre_printed_form_views.xml',
         'views/overlay_text_item_views.xml',
         'views/overlay_config_item_views.xml',
